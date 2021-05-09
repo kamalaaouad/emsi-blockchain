@@ -14,20 +14,20 @@ void _print_hex_buffer(uint8_t const *buf, size_t len);
  */
 static void _tx_out_print(tx_out_t const *out)
 {
-    if (!out)
-        return;
+	if (!out)
+		return;
 
-    printf("Transaction output: {\n");
+	printf("Transaction output: {\n");
 
-    printf("\tamount: %u,\n", out->amount);
-    printf("\tpub: ");
-    _print_hex_buffer(out->pub, sizeof(out->pub));
-    printf(",\n");
-    printf("\thash: ");
-    _print_hex_buffer(out->hash, sizeof(out->hash));
-    printf("\n");
+	printf("\tamount: %u,\n", out->amount);
+	printf("\tpub: ");
+	_print_hex_buffer(out->pub, sizeof(out->pub));
+	printf(",\n");
+	printf("\thash: ");
+	_print_hex_buffer(out->hash, sizeof(out->hash));
+	printf("\n");
 
-    printf("}\n");
+	printf("}\n");
 }
 
 /**
@@ -37,17 +37,17 @@ static void _tx_out_print(tx_out_t const *out)
  */
 int main(void)
 {
-    EC_KEY *receiver;
-    uint8_t receiver_pub[EC_PUB_LEN];
-    tx_out_t *out;
+	EC_KEY *receiver;
+	uint8_t receiver_pub[EC_PUB_LEN];
+	tx_out_t *out;
 
-    receiver = ec_create();
+	receiver = ec_create();
 
-    out = tx_out_create(972, ec_to_pub(receiver, receiver_pub));
-    _tx_out_print(out);
+	out = tx_out_create(972, ec_to_pub(receiver, receiver_pub));
+	_tx_out_print(out);
 
-    free(out);
-    EC_KEY_free(receiver);
+	free(out);
+	EC_KEY_free(receiver);
 
-    return (EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }

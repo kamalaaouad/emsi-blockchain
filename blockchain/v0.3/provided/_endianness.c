@@ -35,4 +35,3 @@ void _swap_endian(void *p, size_t size)
 		n[i] ^= n[size - (i + 1)];
 	}
 }
-
