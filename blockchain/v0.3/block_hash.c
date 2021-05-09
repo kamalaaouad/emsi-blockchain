@@ -5,27 +5,25 @@
  * @node: transaction_t* struct
  * @idx: index of node
  * @arg: pointer to address to write to
- *
  * Return: 0 if success else 1
  */
 int hash_tx_ids(llist_node_t node, unsigned int idx, void *arg)
 {
-	memcpy(*(uint8_t **)arg, ((transaction_t *)node)->id,
-	       SHA256_DIGEST_LENGTH);
+	memcpy(*(uint8_t **)arg, ((transaction_t *)node)->id, SHA256_DIGEST_LENGTH);
 	*(uint8_t **)arg += SHA256_DIGEST_LENGTH;
 	return (0);
 	(void)idx;
 }
 
+
 /**
- * block_hash - Computes the hash of a Block
+ * block_hash - computes hash of block
  * @block: pointer to block to hash
- * @hash_buf: buffer to store hash
- *
- * Return: pointer to @hash_buf
+ * @hash_buf: buffer to store hash/digest
+ * Return: pointer to buffer
  */
 uint8_t *block_hash(block_t const *block,
-		    uint8_t hash_buf[SHA256_DIGEST_LENGTH])
+	uint8_t hash_buf[SHA256_DIGEST_LENGTH])
 {
 	size_t len0 = sizeof(block->info) + block->data.len, len;
 	int8_t *_buf, *buf;
