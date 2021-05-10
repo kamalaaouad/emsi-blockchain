@@ -1,13 +1,19 @@
-CC=gcc
-CFLAGS=-Wall -Werror -Wextra -pedantic -ggdb3 -c
-SRC=$(wildcard *.c) $(wildcard transaction/*.c)
-OBJS=$(SRC:.c=.o)
-NAME=libhblk_blockchain.a
-.PHONY: clean oclean
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra -pedantic -std=gnu90 -ggdb3 -c -I. -Itransaction/ -Iprovided/ -I../../crypto -L../../crypto -lhblk_crypto -lllist -lssl -lcrypto -pthread
+
+SRC0 = $(wildcard *.c) $(wildcard transaction/*.c) $(wildcard provided/*.c)
+OBJ0 = $(SRC0:.c=.o)
+NAME0 = libhblk_blockchain.a
+
+.PHONY: clean oclean flcean libhblk_blockchain.a
+
 clean:
-	rm *~ $(NAME)
+	$(RM) *~ $(NAME0)
+
 oclean:
-	rm $(OBJS)
-libhblk_blockchain.a: blockchain.h $(OBJS)
-	ar rcs $(NAME) $(OBJS)
-	make oclean
+	$(RM) $(OBJ0)
+
+fclean: clean oclean
+
+libhblk_blockchain.a: blockchain.h transaction/transaction.h $(OBJ0)
+	ar rcs $(NAME0) $(OBJ0)

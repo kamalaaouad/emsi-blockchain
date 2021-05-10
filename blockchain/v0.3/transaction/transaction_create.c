@@ -14,8 +14,7 @@ int collect_sender_unspent(llist_node_t node, unsigned int idx, void *arg)
 
 	if (!memcmp(utx->out.pub, visitor->sender_pub, EC_PUB_LEN))
 	{
-		if (llist_add_node(visitor->sender_unspent, node,
-				   ADD_NODE_REAR))
+		if (llist_add_node(visitor->sender_unspent, node, ADD_NODE_REAR))
 			exit(1);
 		visitor->total_amount += utx->out.amount;
 		if (visitor->total_amount >= visitor->amount)
@@ -57,8 +56,8 @@ int map_output_to_input(llist_node_t node, unsigned int idx, void *arg)
  * Return: tx struct
  */
 transaction_t *populate_tx(EC_KEY const *sender, visitor_t *visitor,
-			   llist_t *all_unspent, uint8_t *sender_pub,
-			   uint8_t *receiver_pub, transaction_t *tx)
+	llist_t *all_unspent, uint8_t *sender_pub, uint8_t *receiver_pub,
+	transaction_t *tx)
 {
 	ssize_t i;
 	tx_out_t *to_receiver, *to_sender;
@@ -67,18 +66,16 @@ transaction_t *populate_tx(EC_KEY const *sender, visitor_t *visitor,
 	tx->outputs = llist_create(MT_SUPPORT_FALSE);
 	to_receiver = tx_out_create(visitor->amount, receiver_pub);
 	to_sender = visitor->total_amount > visitor->amount ?
-		tx_out_create(visitor->total_amount - visitor->amount,
-			      sender_pub) : 0;
+		tx_out_create(visitor->total_amount - visitor->amount, sender_pub) : 0;
 
 	if (!tx->inputs || !tx->outputs || !to_receiver ||
-	    (visitor->total_amount > visitor->amount && !to_sender))
+		(visitor->total_amount > visitor->amount && !to_sender))
 		return (llist_destroy(tx->inputs, 1, free),
 			llist_destroy(tx->outputs, 1, free), free(tx), NULL);
-	llist_for_each(visitor->sender_unspent, map_output_to_input,
-		       tx->inputs);
+	llist_for_each(visitor->sender_unspent, map_output_to_input, tx->inputs);
 
 	if (llist_add_node(tx->outputs, to_receiver, ADD_NODE_REAR) ||
-	    (to_sender && llist_add_node(tx->outputs, to_sender, ADD_NODE_REAR)))
+		(to_sender && llist_add_node(tx->outputs, to_sender, ADD_NODE_REAR)))
 		exit(1);
 	if (!transaction_hash(tx, tx->id))
 		exit(1);
@@ -101,11 +98,10 @@ transaction_t *populate_tx(EC_KEY const *sender, visitor_t *visitor,
  * @receiver: public key of tx receiver
  * @amount: tx amount
  * @all_unspent: llist of unspent outputs to date
- *
  * Return: pointer to new transaction struct or NULL
  */
 transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
-				  uint32_t amount, llist_t *all_unspent)
+	uint32_t amount, llist_t *all_unspent)
 {
 	uint8_t sender_pub[EC_PUB_LEN], receiver_pub[EC_PUB_LEN];
 	visitor_t visitor = {0};
@@ -113,8 +109,7 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 
 	if (!sender || !receiver || !amount || !all_unspent)
 		return (NULL);
-	if (!ec_to_pub(sender, sender_pub) ||
-	    !ec_to_pub(receiver, receiver_pub))
+	if (!ec_to_pub(sender, sender_pub) || !ec_to_pub(receiver, receiver_pub))
 		return (NULL);
 	visitor.sender_unspent = llist_create(MT_SUPPORT_FALSE);
 	if (!visitor.sender_unspent)
@@ -130,5 +125,5 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 		return (NULL);
 
 	return (populate_tx(sender, &visitor, all_unspent, sender_pub,
-			    receiver_pub, tx));
+		receiver_pub, tx));
 }

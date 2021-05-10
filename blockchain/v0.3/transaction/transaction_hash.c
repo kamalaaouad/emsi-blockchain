@@ -37,7 +37,7 @@ int hash_outputs(llist_node_t node, unsigned int idx, void *arg)
  * Return: ptr to buffer or NULL
  */
 uint8_t *transaction_hash(transaction_t const *transaction,
-			  uint8_t hash_buf[SHA256_DIGEST_LENGTH])
+	uint8_t hash_buf[SHA256_DIGEST_LENGTH])
 {
 	ssize_t len;
 	uint8_t *_buf, *buf;
